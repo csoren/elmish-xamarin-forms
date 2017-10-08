@@ -10,6 +10,17 @@ module Attributes =
         | Title title ->
             view.Title <- title
 
+    let masterDetailPage (view : Xamarin.Forms.MasterDetailPage) = function
+        | IsGestureEnabled isGestureEnabled ->
+            view.IsGestureEnabled <- isGestureEnabled
+        | IsPresented isPresented ->
+            view.IsPresented <- isPresented
+        | MasterBehavior masterBehavior ->
+            view.MasterBehavior <- masterBehavior
+        | OnIsPresentedChanged (BoolEvent.Event boolEvent) ->
+            Event.clear "IsPresentedChanged" view
+            view.IsPresentedChanged.Add (fun _ -> boolEvent view.IsPresented)
+
     let stackLayout (view : Xamarin.Forms.StackLayout) = function
         | VerticalOptions options ->
             view.VerticalOptions <- options
@@ -41,7 +52,7 @@ module Attributes =
             view.Detail <- detail
         | DetailColor detailColor ->
             view.DetailColor <- detailColor
-        | OnTapped (UnitEvent event) ->
+        | OnTapped (UnitEvent.Event event) ->
             Event.clear "Tapped" view
             view.Tapped.Add (ignore >> event)
 
@@ -123,7 +134,9 @@ module Views =
                     |> Seq.iter (fun v -> viewRoot.PushAsync(v) |> ignore)
                 None
 
-            | MasterDetailPage (viewMaster, viewDetail), MasterDetailPage (lastViewMaster, lastViewDetail), (:? Xamarin.Forms.MasterDetailPage as viewRoot) ->
+            | MasterDetailPage (viewAttributes, viewMaster, viewDetail), MasterDetailPage (lastViewAttributes, lastViewMaster, lastViewDetail), (:? Xamarin.Forms.MasterDetailPage as viewRoot) ->
+                Attributes.setUpdated Attributes.masterDetailPage viewAttributes lastViewAttributes viewRoot
+
                 updatePage viewMaster lastViewMaster viewRoot.Master
                 |> Option.iter (fun page -> viewRoot.Master <- page)
 

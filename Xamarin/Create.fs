@@ -56,13 +56,14 @@ let rec view = function
 
 let rec page = function
     | ContentPage (attributes, content) ->
-        let page = new Xamarin.Forms.ContentPage(Content = view content)
+        let page = Xamarin.Forms.ContentPage(Content = view content)
         Attributes.updateAll Attributes.contentPage attributes page
         page :> Xamarin.Forms.Page
 
-    | MasterDetailPage (master, detail) ->
-        new Xamarin.Forms.MasterDetailPage(Master = page master, Detail = page detail)
-        :> Xamarin.Forms.Page
+    | MasterDetailPage (attributes, master, detail) ->
+        let page = Xamarin.Forms.MasterDetailPage(Master = page master, Detail = page detail)
+        Attributes.updateAll Attributes.masterDetailPage attributes page
+        page :> Xamarin.Forms.Page
 
     | NavigationPage content ->
         let navigationPage = new Xamarin.Forms.NavigationPage()

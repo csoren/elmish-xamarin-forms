@@ -7,10 +7,13 @@ type Extension<'x> =
 (* Event signatures *)
 
 [<CustomEquality; NoComparison>]
-type UnitEvent =
-    | UnitEvent of (unit -> unit)
+type Event<'t> =
+    | Event of ('t -> unit)
     override this.Equals(that) = System.Object.ReferenceEquals(this, that)
     override this.GetHashCode() = 0
+
+type UnitEvent = Event<unit>
+type BoolEvent = Event<bool>
 
 
 (* Cells *)
@@ -75,15 +78,21 @@ type ContentPageAttribute =
     | Icon of string
     | Title of string
 
+type MasterDetailPageAttribute =
+    | IsGestureEnabled of bool
+    | IsPresented of bool
+    | MasterBehavior of Xamarin.Forms.MasterBehavior
+    | OnIsPresentedChanged of BoolEvent
+
 type Page =
     | ContentPage of ContentPageAttribute list * View
-    | MasterDetailPage of Page * Page
+    | MasterDetailPage of MasterDetailPageAttribute list * Page * Page
     | NavigationPage of Page list
 
 
 let contentPage attributes content = ContentPage (attributes, content)
 
-let masterDetailPage master detail = MasterDetailPage (master, detail)
+let masterDetailPage attributes master detail = MasterDetailPage (attributes, master, detail)
 
 let navigationPage content = NavigationPage content
 
