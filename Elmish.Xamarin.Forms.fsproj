@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <Folder Include="Xamarin\" />
     <Folder Include="Extensions\" />
@@ -12,11 +10,11 @@
     <Compile Include="cmd.fs" />
     <Compile Include="program.fs" />
     <Compile Include="Extensions\Seq.fs" />
+    <Compile Include="Xamarin\Event.fs" />
     <Compile Include="Xamarin\VirtualDOM.fs" />
     <Compile Include="Xamarin\Update.fs" />
     <Compile Include="Xamarin\Create.fs" />
     <Compile Include="Xamarin\App.fs" />
-    <Compile Include="Xamarin\Event.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="2.4.0.282" />

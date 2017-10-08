@@ -24,6 +24,27 @@ module Attributes =
         | TableSectionAttribute.Title title ->
             view.Title <- title
 
+    let tableView (view : Xamarin.Forms.TableView) = function
+        | TableViewAttribute.HasUnevenRows hasUnevenRows ->
+            view.HasUnevenRows <- hasUnevenRows
+        | Intent intent ->
+            view.Intent <- intent
+        | RowHeight rowHeight ->
+            view.RowHeight <- rowHeight
+
+    let textCell (view : Xamarin.Forms.TextCell) = function
+        | TextCellAttribute.Text text ->
+            view.Text <- text
+        | TextColor textColor ->
+            view.TextColor <- textColor
+        | Detail detail ->
+            view.Detail <- detail
+        | DetailColor detailColor ->
+            view.DetailColor <- detailColor
+        | OnTapped (UnitEvent event) ->
+            Event.clear "Tapped" view
+            view.Tapped.Add (ignore >> event)
+
     let updateAll updateFn attributes view =
         attributes |> Seq.iter (updateFn view)
 
@@ -36,21 +57,21 @@ module Attributes =
 
 
 module Views =
-
-
     let updateChildren updateFn viewChildren lastViewChildren (collection : System.Collections.Generic.IList<'a>) =
         Seq.zip3 viewChildren lastViewChildren collection
         |> Seq.mapi (fun i t -> i, (t |||> updateFn))
         |> Seq.bindOption (fun (i, optView) -> optView |> Option.map (fun view -> i, view))
         |> Seq.iter (fun (i, view) -> collection.[i] <- view)
 
-
     let rec updateCell view lastView (root : Xamarin.Forms.Cell) : Xamarin.Forms.Cell option =
         if view = lastView then
             None
         else
-            match view, lastView with
-            | CellExtension ext, CellExtension lastExt ->
+            match view, lastView, root with
+            | TextCell viewAttributes, TextCell lastViewAttributes, (:? Xamarin.Forms.TextCell as viewRoot) ->
+                Attributes.setUpdated Attributes.textCell viewAttributes lastViewAttributes viewRoot
+                None
+            | CellExtension ext, CellExtension lastExt, _ ->
                 ext.update lastExt root
 
     and updateSection view lastView (viewRoot : Xamarin.Forms.TableSection) : Xamarin.Forms.TableSection option =
@@ -68,13 +89,18 @@ module Views =
             None
         else
             match view, lastView, root with
+            | Label viewAttributes, Label lastViewAttributes, (:? Xamarin.Forms.Label as viewRoot) ->
+                Attributes.setUpdated Attributes.label viewAttributes lastViewAttributes viewRoot
+                None
+
             | StackLayout (viewAttributes, viewChildren), StackLayout (lastViewAttributes, lastViewChildren), (:? Xamarin.Forms.StackLayout as viewRoot) ->
                 updateChildren updateView viewChildren lastViewChildren viewRoot.Children
                 Attributes.setUpdated Attributes.stackLayout viewAttributes lastViewAttributes viewRoot
                 None
-
-            | Label viewAttributes, Label lastViewAttributes, (:? Xamarin.Forms.Label as viewRoot) ->
-                Attributes.setUpdated Attributes.label viewAttributes lastViewAttributes viewRoot
+            
+            | TableView (viewAttributes, viewSections), TableView (lastViewAttributes, lastViewSections), (:? Xamarin.Forms.TableView as viewRoot) ->
+                updateChildren updateSection viewSections lastViewSections viewRoot.Root
+                Attributes.setUpdated Attributes.tableView viewAttributes lastViewAttributes viewRoot
                 None
 
             | ViewExtension viewExtension, ViewExtension lastViewExtension, _ ->

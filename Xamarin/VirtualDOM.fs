@@ -15,8 +15,18 @@ type UnitEvent =
 
 (* Cells *)
 
+type TextCellAttribute =
+    | Text of string
+    | TextColor of Xamarin.Forms.Color
+    | Detail of string
+    | DetailColor of Xamarin.Forms.Color
+    | OnTapped of UnitEvent
+
 type Cell =
+    | TextCell of TextCellAttribute list
     | CellExtension of (Extension<Xamarin.Forms.Cell>)
+
+let textCell attributes = TextCell attributes
 
 
 (* Tables *)
@@ -27,7 +37,7 @@ type TableSectionAttribute =
 type TableSection =
     | TableSection of TableSectionAttribute list * Cell list
 
-let tableSection attributes children = TableSection(attributes, children)
+let tableSection attributes children = TableSection (attributes, children)
 
 
 (* Views *)
@@ -39,15 +49,24 @@ type LabelAttribute =
     | HorizontalTextAlignment of Xamarin.Forms.TextAlignment
     | Text of string
 
+type TableViewAttribute =
+    | HasUnevenRows of bool
+    | Intent of Xamarin.Forms.TableIntent
+    | RowHeight of int
+
 type View =
-    | StackLayout of StackLayoutAttribute list * View list
     | Label of LabelAttribute list
+    | StackLayout of StackLayoutAttribute list * View list
+    | TableView of TableViewAttribute list * TableSection list
     | ViewExtension of Extension<Xamarin.Forms.View>
 
 
-let stackLayout attributes children = StackLayout(attributes, children)
+let label attributes = Label attributes
 
-let label attributes = Label(attributes)
+let stackLayout attributes children = StackLayout (attributes, children)
+
+let tableView attributes children = TableView (attributes, children)
+
 
 
 (* Pages *)
@@ -62,10 +81,10 @@ type Page =
     | NavigationPage of Page list
 
 
-let contentPage attributes content = ContentPage(attributes, content)
+let contentPage attributes content = ContentPage (attributes, content)
 
-let masterDetailPage master detail = MasterDetailPage(master, detail)
+let masterDetailPage master detail = MasterDetailPage (master, detail)
 
-let navigationPage content = NavigationPage(content)
+let navigationPage content = NavigationPage content
 
 

@@ -5,6 +5,11 @@ open Elmish.Xamarin.Forms.Update
 
 
 let cell = function
+    | TextCell attributes -> 
+        let cell = Xamarin.Forms.TextCell ()
+        Attributes.updateAll Attributes.textCell attributes cell
+        cell :> Xamarin.Forms.Cell
+
     | CellExtension ext -> ext.create ()
 
 let section = function
@@ -12,12 +17,21 @@ let section = function
         let section = new Xamarin.Forms.TableSection ()
         Attributes.updateAll Attributes.tableSection attributes section
 
-        cells
-        |> Seq.map cell
-        |> section.Add
+        section.Add (cells |> Seq.map cell)
         section
 
+let tableRoot sections =
+    let root = new Xamarin.Forms.TableRoot()
+    root.Add (sections |> Seq.map section)
+    root
+
 let rec view = function
+    | Label attributes ->
+        let label = new Xamarin.Forms.Label ()
+        Attributes.updateAll Attributes.label attributes label
+
+        label :> Xamarin.Forms.View
+
     | StackLayout (attributes, children) ->
         let stack = new Xamarin.Forms.StackLayout ()
         Attributes.updateAll Attributes.stackLayout attributes stack
@@ -28,11 +42,13 @@ let rec view = function
 
         stack :> Xamarin.Forms.View
 
-    | Label attributes ->
-        let label = new Xamarin.Forms.Label ()
-        Attributes.updateAll Attributes.label attributes label
+    | TableView (attributes, sections) ->
+        let root = tableRoot sections
+        let tableView = Xamarin.Forms.TableView ()
+        Attributes.updateAll Attributes.tableView attributes tableView
 
-        label :> Xamarin.Forms.View
+        tableView.Root <- root
+        tableView :> Xamarin.Forms.View
 
     | ViewExtension ext ->
         ext.create ()
