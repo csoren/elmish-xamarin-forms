@@ -14,6 +14,7 @@ type Event<'t> =
 
 type UnitEvent = Event<unit>
 type BoolEvent = Event<bool>
+type StringEvent = Event<string>
 
 
 (* Cells *)
@@ -76,13 +77,34 @@ type ButtonAttribute =
     | TextColor of Xamarin.Forms.Color
     | OnClicked of UnitEvent
 
+type EntryAttribute =
+    | HorizontalOptions of Xamarin.Forms.LayoutOptions
+    | Margin of Xamarin.Forms.Thickness
+    | VerticalOptions of Xamarin.Forms.LayoutOptions
+    | FontAttributes of Xamarin.Forms.FontAttributes
+    | FontFamily of string
+    | FontSize of float
+    | HorizontalTextAlignment of Xamarin.Forms.TextAlignment
+    | IsPassword of bool
+    | Placeholder of string
+    | PlaceholderColor of Xamarin.Forms.Color
+    | Text of string
+    | TextColor of Xamarin.Forms.Color
+    | OnCompleted of UnitEvent
+    | OnTextChanged of StringEvent
+
 type View =
     | Button of ButtonAttribute list
+    | Entry of EntryAttribute list
     | Label of LabelAttribute list
     | StackLayout of StackLayoutAttribute list * View list
     | TableView of TableViewAttribute list * TableSection list
     | ViewExtension of Extension<Xamarin.Forms.View>
 
+
+let button attributes = Button attributes
+
+let entry attributes = Entry attributes
 
 let label attributes = Label attributes
 
@@ -90,7 +112,6 @@ let stackLayout attributes children = StackLayout (attributes, children)
 
 let tableView attributes children = TableView (attributes, children)
 
-let button attributes = Button attributes
 
 
 (* Pages *)

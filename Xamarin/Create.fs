@@ -34,6 +34,9 @@ let rec view = function
     | Button attributes ->
         createView<Xamarin.Forms.Button,ButtonAttribute> Attributes.button attributes 
 
+    | Entry attributes ->
+        createView<Xamarin.Forms.Entry,EntryAttribute> Attributes.entry attributes 
+
     | Label attributes ->
         createView<Xamarin.Forms.Label,LabelAttribute> Attributes.label attributes 
 

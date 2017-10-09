@@ -51,6 +51,10 @@ and view newView lastView (root : Xamarin.Forms.View) : Xamarin.Forms.View optio
             Attributes.setUpdated Attributes.button viewAttributes lastViewAttributes viewRoot
             None
 
+        | Entry viewAttributes, Entry lastViewAttributes, (:? Xamarin.Forms.Entry as viewRoot) ->
+            Attributes.setUpdated Attributes.entry viewAttributes lastViewAttributes viewRoot
+            None
+
         | Label viewAttributes, Label lastViewAttributes, (:? Xamarin.Forms.Label as viewRoot) ->
             Attributes.setUpdated Attributes.label viewAttributes lastViewAttributes viewRoot
             None

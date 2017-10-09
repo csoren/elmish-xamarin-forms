@@ -37,7 +37,7 @@ let label (view : Xamarin.Forms.Label) = function
         view.HorizontalOptions <- options
     | LabelAttribute.VerticalOptions options ->
         view.VerticalOptions <- options
-    | HorizontalTextAlignment align ->
+    | LabelAttribute.HorizontalTextAlignment align ->
         view.HorizontalTextAlignment <- align
     | LabelAttribute.Text text ->
         view.Text <- text
@@ -53,21 +53,53 @@ let button (view : Xamarin.Forms.Button) = function
         view.BorderRadius <- radius
     | BorderWidth width ->
         view.BorderWidth <- width
-    | FontAttributes attributes ->
+    | ButtonAttribute.FontAttributes attributes ->
         view.FontAttributes <- attributes
-    | FontFamily family ->
+    | ButtonAttribute.FontFamily family ->
         view.FontFamily <- family
-    | FontSize size ->
+    | ButtonAttribute.FontSize size ->
         view.FontSize <- size
     | Image name -> 
         view.Image <- loadImage name
-    | Text text ->
+    | ButtonAttribute.Text text ->
         view.Text <- text
-    | TextColor color ->
+    | ButtonAttribute.TextColor color ->
         view.TextColor <- color
     | OnClicked (UnitEvent.Event fn) ->
         Event.clear "Clicked" view
         view.Clicked.Add (fun _ -> fn ())
+
+let entry (view : Xamarin.Forms.Entry) = function
+    | EntryAttribute.HorizontalOptions options ->
+        view.HorizontalOptions <- options
+    | EntryAttribute.Margin thickness ->
+        view.Margin <- thickness
+    | EntryAttribute.VerticalOptions options ->
+        view.VerticalOptions <- options
+    | FontAttributes fontAttributes ->
+        view.FontAttributes <- fontAttributes
+    | FontFamily family ->
+        view.FontFamily <- family
+    | FontSize size ->
+        view.FontSize <- size
+    | HorizontalTextAlignment textAlignment ->
+        view.HorizontalTextAlignment <- textAlignment
+    | IsPassword isPassword ->
+        view.IsPassword <- isPassword
+    | Placeholder placeholder ->
+        view.Placeholder <- placeholder
+    | PlaceholderColor color ->
+        view.PlaceholderColor <- color
+    | Text text ->
+        view.Text <- text
+    | TextColor color ->
+        view.TextColor <- color
+    | OnCompleted (UnitEvent.Event fn) ->
+        Event.clear "Completed" view
+        view.Completed.Add (ignore >> fn)
+    | OnTextChanged (StringEvent.Event fn) ->
+        Event.clear "TextChanged" view
+        view.TextChanged.Add (fun ev -> fn ev.NewTextValue)
 
 let tableSection (view : Xamarin.Forms.TableSection) = function
     | TableSectionAttribute.Title title ->
