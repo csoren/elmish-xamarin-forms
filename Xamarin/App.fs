@@ -21,7 +21,7 @@ type internal App<'model, 'msg>(program: Program<unit, 'model, 'msg, VirtualDOM.
     let updateViews view =
         match optLastView with
         | Some lastView ->
-            Views.updatePage view lastView this.MainPage
+            Update.page view lastView this.MainPage
             |> Option.iter (fun page -> this.MainPage <- page)
         | None ->
             this.MainPage <- Create.page view

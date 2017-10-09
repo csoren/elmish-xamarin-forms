@@ -12,8 +12,9 @@
     <Compile Include="Extensions\Seq.fs" />
     <Compile Include="Xamarin\Event.fs" />
     <Compile Include="Xamarin\VirtualDOM.fs" />
-    <Compile Include="Xamarin\Update.fs" />
+    <Compile Include="Xamarin\Attributes.fs" />
     <Compile Include="Xamarin\Create.fs" />
+    <Compile Include="Xamarin\Update.fs" />
     <Compile Include="Xamarin\App.fs" />
   </ItemGroup>
   <ItemGroup>

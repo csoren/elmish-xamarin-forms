@@ -1,7 +1,7 @@
 ﻿module Elmish.Xamarin.Forms.Create
 
 open Elmish.Xamarin.Forms.VirtualDOM
-open Elmish.Xamarin.Forms.Update
+open Elmish.Xamarin.Forms
 
 
 let cell = function
@@ -25,15 +25,20 @@ let tableRoot sections =
     root.Add (sections |> Seq.map section)
     root
 
-let rec view = function
-    | Label attributes ->
-        let label = new Xamarin.Forms.Label ()
-        Attributes.updateAll Attributes.label attributes label
+let inline createView<'t, 'a when 't : (new : unit -> 't) and 't :> Xamarin.Forms.View> (updateFn : 't -> 'a -> unit) (attributes : 'a seq) =
+    let v = new 't ()
+    Attributes.updateAll updateFn attributes v
+    v :> Xamarin.Forms.View
 
-        label :> Xamarin.Forms.View
+let rec view = function
+    | Button attributes ->
+        createView<Xamarin.Forms.Button,ButtonAttribute> Attributes.button attributes 
+
+    | Label attributes ->
+        createView<Xamarin.Forms.Label,LabelAttribute> Attributes.label attributes 
 
     | StackLayout (attributes, children) ->
-        let stack = new Xamarin.Forms.StackLayout ()
+        let stack = Xamarin.Forms.StackLayout ()
         Attributes.updateAll Attributes.stackLayout attributes stack
 
         children

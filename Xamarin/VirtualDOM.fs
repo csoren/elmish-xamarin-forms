@@ -46,9 +46,14 @@ let tableSection attributes children = TableSection (attributes, children)
 (* Views *)
 
 type StackLayoutAttribute =
+    | Orientation of Xamarin.Forms.StackOrientation
+    | Spacing of float
+    | HorizontalOptions of Xamarin.Forms.LayoutOptions
     | VerticalOptions of Xamarin.Forms.LayoutOptions
 
 type LabelAttribute =
+    | HorizontalOptions of Xamarin.Forms.LayoutOptions
+    | VerticalOptions of Xamarin.Forms.LayoutOptions
     | HorizontalTextAlignment of Xamarin.Forms.TextAlignment
     | Text of string
 
@@ -57,7 +62,22 @@ type TableViewAttribute =
     | Intent of Xamarin.Forms.TableIntent
     | RowHeight of int
 
+type ButtonAttribute =
+    | HorizontalOptions of Xamarin.Forms.LayoutOptions
+    | VerticalOptions of Xamarin.Forms.LayoutOptions
+    | BorderColor of Xamarin.Forms.Color
+    | BorderRadius of int
+    | BorderWidth of float
+    | FontAttributes of Xamarin.Forms.FontAttributes
+    | FontFamily of string
+    | FontSize of float
+    | Image of string
+    | Text of string
+    | TextColor of Xamarin.Forms.Color
+    | OnClicked of UnitEvent
+
 type View =
+    | Button of ButtonAttribute list
     | Label of LabelAttribute list
     | StackLayout of StackLayoutAttribute list * View list
     | TableView of TableViewAttribute list * TableSection list
@@ -70,6 +90,7 @@ let stackLayout attributes children = StackLayout (attributes, children)
 
 let tableView attributes children = TableView (attributes, children)
 
+let button attributes = Button attributes
 
 
 (* Pages *)
